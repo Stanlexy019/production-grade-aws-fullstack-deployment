@@ -15,9 +15,7 @@ services:
       context: ./backend
       dockerfile: Dockerfile
     container_name: aspire-backend
-    restart: always
-    ports:
-      - "3500:3500"
+    restart: always 
     environment:
       MONGO_CONN_STR: mongodb://mongo:27017/aspiredb
       PORT: 3500
