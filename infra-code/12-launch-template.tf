@@ -35,12 +35,6 @@ curl -L "https://github.com/docker/compose/releases/latest/download/docker-compo
 chmod +x /usr/local/bin/docker-compose
 
 
-
-# Ensure SSM agent is installed & running
-sudo apt install -y amazon-ssm-agent
-sudo systemctl enable amazon-ssm-agent
-sudo systemctl start amazon-ssm-agent
-
 # Fetch secrets from SSM Parameter Store
 JWT_SECRET=$(aws ssm get-parameter \
   --name "/production-grade-aws-fullstack/jwt_secret" \
@@ -65,6 +59,36 @@ EOT
 # Login to ECR
 aws ecr get-login-password --region eu-north-1 | \
 docker login --username AWS --password-stdin 969759464709.dkr.ecr.eu-north-1.amazonaws.com
+
+cat <<EOR > /home/ubuntu/docker-compose.yml
+version: "3.8"
+
+services:
+
+  mongo:
+    image: mongo:6
+    container_name: mongo
+    volumes:
+      - mongo_data:/data/db
+
+  backend:
+    image: 969759464709.dkr.ecr.eu-north-1.amazonaws.com/production-grade-aws-fullstack-backend:v1
+    env_file:
+      - /home/ubuntu/.env
+    depends_on:
+      - mongo
+    ports:
+      - "3500:3500"
+
+  frontend:
+    image: 969759464709.dkr.ecr.eu-north-1.amazonaws.com/production-grade-aws-fullstack-frontend:v1
+    ports:
+      - "80:80"
+
+volumes:
+  mongo_data:
+EOR
+
 EOF
   )
           
