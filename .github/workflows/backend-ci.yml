@@ -2,10 +2,9 @@ name: Backend CI
 
 on:
   push:
-    branches:
-      - main
+    branches: [ "main" ]
     paths:
-      - 'backend/**'
+      - "backend/**"
 
 permissions:
   id-token: write
