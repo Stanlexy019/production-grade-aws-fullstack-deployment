@@ -37,3 +37,5 @@ jobs:
       - name: Push image
         run: |
           docker push 969759464709.dkr.ecr.eu-north-1.amazonaws.com/production-grade-aws-fullstack-backend:latest
+
+    
