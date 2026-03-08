@@ -1,12 +1,28 @@
 name: Deploy CD
+
 on:
   push:
     branches:
       - main
+
+permissions:
+  id-token: write
+  contents: read
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
+
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::969759464709:role/github-actions-ecr-role
+          aws-region: eu-north-1
+
       - name: Deploy to EC2 via SSM
         run: |
           aws ssm send-command \
