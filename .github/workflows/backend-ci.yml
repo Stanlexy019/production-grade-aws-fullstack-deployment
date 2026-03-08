@@ -2,10 +2,10 @@ name: Backend CI
 
 on:
   push:
-    paths:
-      - 'backend/**'
     branches:
       - main
+    paths:
+      - 'backend/**'
 
 permissions:
   id-token: write
@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Configure AWS credentials
@@ -29,12 +29,11 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v2
 
       - name: Build Docker image
-        run: |
-          docker build -t production-grade-aws-fullstack-backend ./backend
+        run: docker build -t backend ./backend
 
       - name: Tag image
         run: |
-          docker tag production-grade-aws-fullstack-backend:latest \
+          docker tag backend:latest \
           969759464709.dkr.ecr.eu-north-1.amazonaws.com/production-grade-aws-fullstack-backend:latest
 
       - name: Push image
