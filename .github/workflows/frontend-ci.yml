@@ -10,9 +10,31 @@ permissions:
   contents: read
 
 jobs:
-  build:
+  build-and-push:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::969759464709:role/github-actions-ecr-role
+          aws-region: eu-north-1
+
+      - name: Login to Amazon ECR
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build Docker image
+        run: |
+          docker build -t production-grade-aws-fullstack-frontend ./frontend
+
+      - name: Tag Docker image
+        run: |
+          docker tag production-grade-aws-fullstack-frontend:latest \
+          969759464709.dkr.ecr.eu-north-1.amazonaws.com/production-grade-aws-fullstack-frontend:latest
+
+      - name: Push image to ECR
+        run: |
+          docker push 969759464709.dkr.ecr.eu-north-1.amazonaws.com/production-grade-aws-fullstack-frontend:latest
