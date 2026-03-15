@@ -22,3 +22,8 @@ variable "lower-case-and-hyphen" {
   type        = string
   default     = "aspire-vpc"
 }
+variable "account_id" {
+  description = "AWS account ID"
+  type        = string
+  default     = "969759464709"
+}

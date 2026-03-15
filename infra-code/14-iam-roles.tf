@@ -72,3 +72,41 @@ resource "aws_iam_instance_profile" "production_grade_instance_profile" {
   name = "production-grade-ec2-instance-profile"
   role = aws_iam_role.production_grade_ec2_role.name
 }
+
+
+
+##################################################################
+#  SSM:SendCommand POLICY (FOR RUNNING COMMANDS ON EC2 INSTANCES)
+##################################################################
+resource "aws_iam_role_policy" "ssm_send_command" {
+  name   = "production-grade-ssm-send-command"
+  role   = aws_iam_role.production_grade_ec2_role.id
+  policy = jsonencode({
+    Version   = "2012-10-17"
+    Statement = [
+      {
+        Effect   = "Allow"
+        Action   = "ssm:SendCommand"
+        Resource = "arn:aws:ec2:${var.region}:${var.account_id}:instance/*"
+      }
+    ]
+  })
+}
+
+ ##############################################################
+ # EC2:DescribeInstances POLICY (FOR TARGETING INSTANCES IN SSM)
+ ###############################################################
+resource "aws_iam_role_policy" "ec2_describe_instances" {
+  name   = "production-grade-ec2-describe-instances"
+  role   = aws_iam_role.production_grade_ec2_role.id
+  policy = jsonencode({
+    Version   = "2012-10-17"
+    Statement = [
+      {
+        Effect   = "Allow"
+        Action   = "ec2:DescribeInstances"
+        Resource = "arn:aws:ec2:${var.region}:${var.account_id}:instance/*"
+      }
+    ]
+  })
+}

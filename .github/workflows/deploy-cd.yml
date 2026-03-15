@@ -26,7 +26,7 @@ jobs:
       - name: Deploy to EC2 via SSM
         run: |
           aws ssm send-command \
-            --targets "Key=tag:Name,Values=aspire-app" \
+            --targets "Key=tag:Name,Values=aspire*" \
             --document-name "AWS-RunShellScript" \
             --parameters commands="cd /home/ubuntu && docker compose pull && docker compose up -d" \
             --region eu-north-1
