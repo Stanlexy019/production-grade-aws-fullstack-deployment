@@ -45,18 +45,18 @@ resource "aws_iam_role_policy_attachment" "ssm_core" {
 
 resource "aws_iam_role_policy" "ssm_parameter_read" {
   name = "production-grade-ssm-parameter-read"
-  role = aws_iam_role.production_grade_ec2_role.id
+  role = aws_iam_role.production_grade_ec2_role.name
 
   policy = jsonencode({
-    Version = "2012-10-17"
+    Version = "2012-10-17",
     Statement = [
       {
-        Effect = "Allow"
+        Effect = "Allow",
         Action = [
           "ssm:GetParameter",
           "ssm:GetParameters",
           "ssm:GetParametersByPath"
-        ]
+        ],
         Resource = "arn:aws:ssm:eu-north-1:969759464709:parameter/production-grade-aws-fullstack/*"
       }
     ]
@@ -75,38 +75,3 @@ resource "aws_iam_instance_profile" "production_grade_instance_profile" {
 
 
 
-##################################################################
-#  SSM:SendCommand POLICY (FOR RUNNING COMMANDS ON EC2 INSTANCES)
-##################################################################
-resource "aws_iam_role_policy" "ssm_send_command" {
-  name   = "production-grade-ssm-send-command"
-  role   = aws_iam_role.production_grade_ec2_role.id
-  policy = jsonencode({
-    Version   = "2012-10-17"
-    Statement = [
-      {
-        Effect   = "Allow"
-        Action   = "ssm:SendCommand"
-        Resource = "arn:aws:ec2:${var.region}:${var.account_id}:instance/*"
-      }
-    ]
-  })
-}
-
- ##############################################################
- # EC2:DescribeInstances POLICY (FOR TARGETING INSTANCES IN SSM)
- ###############################################################
-resource "aws_iam_role_policy" "ec2_describe_instances" {
-  name   = "production-grade-ec2-describe-instances"
-  role   = aws_iam_role.production_grade_ec2_role.id
-  policy = jsonencode({
-    Version   = "2012-10-17"
-    Statement = [
-      {
-        Effect   = "Allow"
-        Action   = "ec2:DescribeInstances"
-        Resource = "arn:aws:ec2:${var.region}:${var.account_id}:instance/*"
-      }
-    ]
-  })
-}

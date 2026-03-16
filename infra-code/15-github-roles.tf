@@ -38,7 +38,90 @@ resource "aws_iam_role" "github_actions_role" {
 }
 
 ##### ATTACH AWS MANAGED POLICY - ECR POWER USER ######
-resource "aws_iam_role_policy_attachment" "github_ecr_policy" {
+#resource "aws_iam_policy_attachment" "github_ecr_policy" {
+ # name       = "github-ecr-policy-attachment"
+  #roles      = [aws_iam_role.github_actions_role.name]
+  #policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryPowerUser"
+#}
+
+
+resource "aws_iam_role_policy_attachment" "github_actions_attach_ecr" {
+  
   role       = aws_iam_role.github_actions_role.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryPowerUser"
 }
+
+
+##################################################################
+#  SSM:SendCommand POLICY (FOR RUNNING COMMANDS ON EC2 INSTANCES)
+##################################################################
+resource "aws_iam_policy" "github_actions_ssm_send_command" {
+  name   = "production-grade-ssm-send-command"
+  policy = jsonencode({
+    Version   = "2012-10-17"
+    Statement = [
+      {
+        Effect   = "Allow"
+        Action   = [
+          "ssm:SendCommand",
+          "ssm:listCommands",
+          "ssm:ListCommandInvocations"
+        ]
+        Resource = "arn:aws:ec2:${var.region}:${var.account_id}:instance/*"
+      }
+    ]
+  })
+}
+
+# Attach SSM policy to role
+resource "aws_iam_policy_attachment" "github_ssm_policy_attachment" {
+  name       = "github-ssm-policy-attachment"
+  roles      = [aws_iam_role.github_actions_role.name]
+  policy_arn = aws_iam_policy.github_actions_ssm_send_command.arn
+}
+
+ ##############################################################
+ # EC2:DescribeInstances POLICY (FOR TARGETING INSTANCES IN SSM)
+ ###############################################################
+resource "aws_iam_policy" "github_actions_ec2_describe_instances" {
+  name   = "production-grade-ec2-describe-instances"
+  policy = jsonencode({
+    Version   = "2012-10-17"
+    Statement = [
+      {
+        Effect   = "Allow"
+        Action   = "ec2:DescribeInstances"
+        Resource = "arn:aws:ec2:${var.region}:${var.account_id}:instance/*"
+      }
+    ]
+  })
+}
+
+# Attach EC2 DescribeInstances policy to role
+resource "aws_iam_policy_attachment" "github_ec2_describe_instances_policy_attachment" {
+  name       = "github-ec2-describe-instances-policy-attachment"
+  roles      = [aws_iam_role.github_actions_role.name]
+  policy_arn = aws_iam_policy.github_actions_ec2_describe_instances.arn
+}
+
+
+
+
+# Attach EC2 Describe Instances Policy to the GitHub Actions role
+resource "aws_iam_role_policy_attachment" "github_actions_attach_ec2_describe" {
+  role       = aws_iam_role.github_actions_role.name
+  policy_arn = aws_iam_policy.github_actions_ec2_describe_instances.arn
+}
+
+# Attach SSM Send Command Policy to the GitHub Actions role
+resource "aws_iam_role_policy_attachment" "github_actions_attach_ssm_send" {
+  role       = aws_iam_role.github_actions_role.name
+  policy_arn = aws_iam_policy.github_actions_ssm_send_command.arn
+}
+
+
+
+
+
+
+ #policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryPowerUser"
