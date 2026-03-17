@@ -1,3 +1,42 @@
+# name: Deploy CD
+
+# on:
+#   push:
+#     branches:
+#       - main
+#   workflow_dispatch:
+
+# permissions:
+#   id-token: write
+#   contents: read
+
+# jobs:
+#   deploy:
+#     runs-on: ubuntu-latest
+
+#     steps:
+#       - name: Checkout repository
+#         uses: actions/checkout@v4
+
+#       - name: Configure AWS credentials (OIDC)
+#         uses: aws-actions/configure-aws-credentials@v4
+#         with:
+#           role-to-assume: arn:aws:iam::969759464709:role/github-actions-ecr-role
+#           aws-region: eu-north-1
+
+#       - name: Deploy to EC2 via SSM
+#         run: |
+#           aws ssm send-command \
+#             --targets "Key=tag:Name,Values=aspire*" \
+#             --document-name "AWS-RunShellScript" \
+#             --comment "Test CD Deploy using SSM" \
+#             --parameters commands="cd /home/ubuntu && docker-compose pull && docker-compose up -d" \
+#             --region eu-north-1
+
+
+
+
+
 name: Deploy CD
 
 on:
@@ -24,11 +63,17 @@ jobs:
           role-to-assume: arn:aws:iam::969759464709:role/github-actions-ecr-role
           aws-region: eu-north-1
 
-      - name: Deploy to EC2 via SSM
+      - name: Send deploy command to app instance via SSM
         run: |
           aws ssm send-command \
             --targets "Key=tag:Name,Values=aspire*" \
             --document-name "AWS-RunShellScript" \
-            --comment "Test CD Deploy using SSM" \
-            --parameters commands="cd /home/ubuntu && docker-compose pull && docker-compose up -d" \
+            --comment "Deploy app with docker compose" \
+            --parameters 'commands=["cd /home/ubuntu","docker-compose pull","docker-compose up -d","docker ps"]' \
+            --region eu-north-1
+
+      - name: Check target group health
+        run: |
+          aws elbv2 describe-target-health \
+            --target-group-arn arn:aws:elasticloadbalancing:eu-north-1:969759464709:targetgroup/aspire-vpc-tg/c71da529a3351b3b \
             --region eu-north-1
