@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch:
 
 permissions:
   id-token: write
@@ -29,5 +30,5 @@ jobs:
             --targets "Key=tag:Name,Values=aspire*" \
             --document-name "AWS-RunShellScript" \
             --comment "Test CD Deploy using SSM" \
-            --parameters commands="cd /home/ubuntu && docker compose pull && docker compose up -d" \
+            --parameters commands="cd /home/ubuntu && docker-compose pull && docker-compose up -d" \
             --region eu-north-1

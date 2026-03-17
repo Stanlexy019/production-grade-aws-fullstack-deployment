@@ -89,6 +89,12 @@ volumes:
   mongo_data:
 EOR
 
+sleep 20
+cd /home/ubuntu
+aws ecr get-login-password --region eu-north-1 | docker login --username AWS --password-stdin 969759464709.dkr.ecr.eu-north-1.amazonaws.com
+docker-compose pull
+docker-compose up -d
+
 EOF
   )
           
