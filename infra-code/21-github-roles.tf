@@ -38,7 +38,7 @@ resource "aws_iam_role" "github_actions_role" {
 }
 
 #  ATTACH AWS MANAGED POLICY - ECR POWER USER)
-resource "aws_iam_role_policy_attachment" "github_actions_attach_ecr" { 
+resource "aws_iam_role_policy_attachment" "github_actions_attach_ecr" {
   role       = aws_iam_role.github_actions_role.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryPowerUser"
 }
@@ -69,13 +69,13 @@ resource "aws_iam_policy" "github_actions_ssm_send_command" {
   })
 }
 
- ##############################################################
- # EC2:DescribeInstances POLICY (FOR TARGETING INSTANCES IN SSM)
- ###############################################################
+##############################################################
+# EC2:DescribeInstances POLICY (FOR TARGETING INSTANCES IN SSM)
+###############################################################
 resource "aws_iam_policy" "github_actions_ec2_describe_instances" {
-  name   = "production-grade-ec2-describe-instances"
+  name = "production-grade-ec2-describe-instances"
   policy = jsonencode({
-    Version   = "2012-10-17"
+    Version = "2012-10-17"
     Statement = [
       {
         Effect   = "Allow"

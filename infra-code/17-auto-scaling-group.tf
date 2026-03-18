@@ -3,8 +3,8 @@ resource "aws_autoscaling_group" "app_asg" {
   max_size         = 2
   min_size         = 1
   vpc_zone_identifier = [
-    aws_subnet.main_subnet1.id,
-    aws_subnet.main_subnet2.id
+    aws_subnet.private_dbsubnet_az1.id,
+    aws_subnet.private_dbsubnet_az2.id
   ]
 
   launch_template {

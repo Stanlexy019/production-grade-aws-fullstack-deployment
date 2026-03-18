@@ -3,13 +3,13 @@ resource "aws_launch_template" "app_lt" {
   image_id      = "ami-0fa91bc90632c73c9" # Replace with valid AMI in eu-north-1
   instance_type = "t3.micro"
   iam_instance_profile {
-  name = aws_iam_instance_profile.production_grade_instance_profile.name
-}
+    name = aws_iam_instance_profile.production_grade_instance_profile.name
+  }
 
- network_interfaces {
-  associate_public_ip_address = true
-  security_groups             = [aws_security_group.app_sg.id]
-}
+  network_interfaces {
+    associate_public_ip_address = false
+    security_groups             = [aws_security_group.app_sg.id]
+  }
 
   user_data = base64encode(<<-EOF
 #!/bin/bash
@@ -97,14 +97,14 @@ docker-compose up -d
 
 EOF
   )
-          
+
 
   tag_specifications {
     resource_type = "instance"
 
     tags = {
       Name = "${var.production_vpc}-app-instance"
-    } 
+    }
   }
 
 }
