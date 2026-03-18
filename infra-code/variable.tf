@@ -27,3 +27,9 @@ variable "account_id" {
   type        = string
   default     = "969759464709"
 }
+
+variable "alert_email" {
+  description = "Email address for receiving alerts"
+  type        = string
+  default     = "stanleyokoli36@gmail.com"
+}
