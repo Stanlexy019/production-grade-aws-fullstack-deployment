@@ -43,22 +43,22 @@ Below is the high-level architecture of the system:
 
 ### CI/CD
 
-* GitHub Actions
+* GitHub Actions.
 
 ### Container Registry
 
-* Amazon ECR
+* Amazon ECR.
 
 ### Monitoring & Alerting
 
-* Amazon CloudWatch
-* Amazon SNS
+* Amazon CloudWatch.
+* Amazon SNS.
 
 ### Secrets Management
 
 * AWS Systems Manager Parameter Store
 
----
+------
 
 ##  Infrastructure Components
 
