@@ -22,7 +22,8 @@ Key highlights:
 
 Below is the high-level architecture of the system:
 
-![Infrastructure Architecture](image/infra-image.png)
+![Infrastructure Architecture](image/infra-image.jpg)
+Direct image link test: [Open architecture image](./image/infra-image.jpg)
 
 ---
 
@@ -47,12 +48,12 @@ Below is the high-level architecture of the system:
 
 ### Container Registry
 
-* Amazon ECR.
+* Amazon ECR
 
 ### Monitoring & Alerting
 
-* Amazon CloudWatch.
-* Amazon SNS.
+* Amazon CloudWatch
+* Amazon SNS
 
 ### Secrets Management
 
