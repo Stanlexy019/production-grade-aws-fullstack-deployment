@@ -8,8 +8,7 @@ on:
       - 'backend/**'
       - 'frontend/**'
       - '.github/workflows/deploy-cd.yml'  
-  workflow_dispatch:
-
+ 
 permissions:
   id-token: write
   contents: read

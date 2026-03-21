@@ -22,7 +22,7 @@ Key highlights:
 
 Below is the high-level architecture of the system:
 
-![Infrastructure Architecture](images/infra-image.png)
+![Infrastructure Architecture](image/infra-image.png)
 
 ---
 
@@ -184,7 +184,7 @@ project-root
 ├── .github
 │   └── workflows
 │
-├── images
+├── image
 │   └── infra-image.png
 │
 └── README.md
